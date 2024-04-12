@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:studentlist_state/model/box.dart';
 import 'package:studentlist_state/model/modal.dart';
-import 'package:studentlist_state/screens/button.dart';
+import 'package:studentlist_state/widgets/button.dart';
 import 'package:studentlist_state/widgets/user_age.dart';
 import 'package:studentlist_state/widgets/user_contact.dart';
 import 'package:studentlist_state/widgets/user_name.dart';
@@ -128,10 +128,10 @@ class _Add_Deatails_ScreenState extends State<Add_Deatails_Screen> {
                   height: 25,
                 ),
                 Buttons_Screen(
-                    onSavePressed: ,
-                    onClearPressed: onClearPressed,
-                    saveButtonText: saveButtonText,
-                    clearButtonText: clearButtonText),
+                    onSavePressed: onSaveRecord,
+                    onClearPressed: onClearRecord,
+                    saveButtonText: 'Save Details',
+                    clearButtonText: 'Clear'),
                 if (validateImage)
                   Text('Please select an image',
                       style: TextStyle(color: Colors.red)),
@@ -156,5 +156,46 @@ class _Add_Deatails_ScreenState extends State<Add_Deatails_Screen> {
         userImagecontroller.text = returnImage.path;
       },
     );
+  }
+
+  void onSaveRecord() {
+    if (formKey.currentState!.validate()) {
+      // Check if an image has been selected
+      if (selectedImage == null) {
+        setState(() {
+          validateImage = true;
+        });
+      } else {
+        final data = Notes(
+          image: userImagecontroller.text.toString(),
+          userName: userNamecontroller.text.toString(),
+          userContact: userContactcontroller.text.toString(),
+          userAge: userAgecontroller.text.toString(),
+          userRollNumber: userRollNumbercontroller.text.toString(),
+        );
+        final box = Boxes.getData();
+        box.add(data);
+        // data.save();
+        userImagecontroller.clear();
+        userNamecontroller.clear();
+        userContactcontroller.clear();
+        userAgecontroller.clear();
+        userRollNumbercontroller.clear();
+
+        Navigator.pop(context);
+      }
+    }
+  }
+
+  void onClearRecord() {
+    userNamecontroller.clear();
+    userContactcontroller.clear();
+    userAgecontroller.clear();
+    userRollNumbercontroller.clear();
+    userImagecontroller.clear();
+    setState(() {
+      selectedImage = null;
+      validateImage = false;
+    });
   }
 }
