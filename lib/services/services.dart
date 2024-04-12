@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studentlist_state/model/modal.dart';
+import 'package:studentlist_state/screens/edit_screen.dart';
 
 class Service {
   void deleteNotes(Notes notes) async {
@@ -18,5 +19,11 @@ class Service {
     userContactController.text = notes.userContact;
     userAgeController.text = notes.userAge;
     userRollNumberController.text = notes.userRollNumber;
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (ctx) => Edit_Screen(
+                  notes: notes,
+                )));
   }
 }
