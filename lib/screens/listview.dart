@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:studentlist_state/model/modal.dart';
@@ -10,7 +9,7 @@ import 'package:studentlist_state/services/services.dart';
 
 class ListViewScreen extends StatelessWidget {
   final Service service = Get.find();
-
+  final ListViewController controller = Get.put(ListViewController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,17 +33,24 @@ class ListViewScreen extends StatelessWidget {
         ),
       ),
       body: GetBuilder<ListViewController>(
-        init: ListViewController(),
+        init: controller, // Initialize the controller here
         builder: (controller) {
           return Column(
             children: [
               Padding(
                 padding: EdgeInsets.all(8.0),
-                child: TextField(
+                child: TextFormField(
                   onChanged: controller.setSearchQuery,
                   decoration: InputDecoration(
                     hintText: 'Search by name...',
                     prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: BorderSide(
+                        color: Colors.grey,
+                        width: 1.0,
+                      ),
+                    ),
                   ),
                 ),
               ),

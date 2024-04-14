@@ -179,6 +179,7 @@ class _Add_Deatails_ScreenState extends State<Add_Deatails_Screen> {
         );
         final box = Boxes.getData();
         box.add(data);
+        Get.find<ListViewController>().studentList.add(data);
         // data.save();
         userImagecontroller.clear();
         userNamecontroller.clear();
@@ -188,7 +189,7 @@ class _Add_Deatails_ScreenState extends State<Add_Deatails_Screen> {
 
         Get.back();
 
-        Get.find<ListViewController>().refresh();
+        // Get.find<ListViewController>().refresh();
       }
     }
   }

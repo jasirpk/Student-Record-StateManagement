@@ -2,14 +2,19 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:studentlist_state/model/box.dart';
 import 'package:studentlist_state/model/modal.dart';
 import 'package:studentlist_state/screens/edit_screen.dart';
 import 'package:studentlist_state/services/notifier_getx.dart';
 
 class Service {
-  void deleteNotes(Notes notes) async {
-    await notes.delete();
-    Get.find<ListViewController>().refresh();
+  Future<void> deleteNotes(Notes notes) async {
+    final box = Boxes.getData();
+    await box.delete(notes.key);
+
+    Get.find<ListViewController>().studentList.remove(notes);
+
+    Get.find<ListViewController>().studentList.refresh();
   }
 
   Future<void> editDialog(BuildContext context, Notes notes) async {
@@ -26,4 +31,8 @@ class Service {
     userRollNumberController.text = notes.userRollNumber;
     Get.to(() => Edit_Screen(notes: notes));
   }
+}
+
+class StudentDataService extends GetxService {
+  final RxList<Notes> studentList = RxList<Notes>();
 }

@@ -8,11 +8,14 @@ import 'package:studentlist_state/services/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  var directory = await getApplicationDocumentsDirectory();
-  Hive.init(directory.path);
+
+  final appDocumentDirectory = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDirectory.path);
   Hive.registerAdapter(NotesAdapter());
   await Hive.openBox<Notes>('notes');
+
   Get.put(Service());
+
   runApp(StudentRecord());
 }
 
