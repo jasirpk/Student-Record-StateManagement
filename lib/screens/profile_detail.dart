@@ -5,15 +5,15 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:studentlist_state/model/box.dart';
 import 'package:studentlist_state/model/modal.dart';
 
-class ProfielDetail_Screen extends StatefulWidget {
+class ProfileDetail_Screen extends StatefulWidget {
   final Notes student;
 
-  const ProfielDetail_Screen({super.key, required this.student});
+  const ProfileDetail_Screen({super.key, required this.student});
   @override
-  State<ProfielDetail_Screen> createState() => _ProfielDetail_ScreenState();
+  State<ProfileDetail_Screen> createState() => _ProfielDetail_ScreenState();
 }
 
-class _ProfielDetail_ScreenState extends State<ProfielDetail_Screen> {
+class _ProfielDetail_ScreenState extends State<ProfileDetail_Screen> {
   File? selectedImage;
   @override
   Widget build(BuildContext context) {

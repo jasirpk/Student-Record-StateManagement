@@ -1,32 +1,22 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:studentlist_state/model/box.dart';
+import 'package:get/get.dart';
 import 'package:studentlist_state/model/modal.dart';
 import 'package:studentlist_state/screens/add_detatil.dart';
 import 'package:studentlist_state/screens/profile_detail.dart';
+import 'package:studentlist_state/services/notifier_getx.dart';
 import 'package:studentlist_state/services/services.dart';
 
-class ListView_Screen extends StatefulWidget {
-  const ListView_Screen({Key? key}) : super(key: key);
-
-  @override
-  State<ListView_Screen> createState() => _ListView_ScreenState();
-}
-
-class _ListView_ScreenState extends State<ListView_Screen> {
-  String searchQuery = '';
-  Service service = Service();
-  bool isGridView = false; // Flag to track current view mode
+class ListViewScreen extends StatelessWidget {
+  final Service service = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (ctx) => Add_Deatails_Screen()));
+          Get.to(() => Add_Deatails_Screen());
         },
         label: Text('Add +'),
         shape: CircleBorder(),
@@ -43,62 +33,55 @@ class _ListView_ScreenState extends State<ListView_Screen> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: (value) {
-                setState(() {
-                  searchQuery = value.toLowerCase();
-                });
-              },
-              decoration: InputDecoration(
-                hintText: 'Search by name...',
-                prefixIcon: Icon(Icons.search),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'LIST VIEW IN ${isGridView ? 'GRID' : 'LIST'}...',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
+      body: GetBuilder<ListViewController>(
+        init: ListViewController(),
+        builder: (controller) {
+          return Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: TextField(
+                  onChanged: controller.setSearchQuery,
+                  decoration: InputDecoration(
+                    hintText: 'Search by name...',
+                    prefixIcon: Icon(Icons.search),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      isGridView = !isGridView; // Toggle view mode
-                    });
-                  },
-                  icon: Icon(isGridView ? Icons.list : Icons.grid_view),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'LIST VIEW IN ${controller.isGridView.value ? 'GRID' : 'LIST'}...',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Obx(() {
+                      return IconButton(
+                        onPressed: controller.toggleViewMode,
+                        icon: Icon(
+                          controller.isGridView.value
+                              ? Icons.list
+                              : Icons.grid_view,
+                        ),
+                      );
+                    }),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ValueListenableBuilder<Box<Notes>>(
-              valueListenable: Boxes.getData().listenable(),
-              builder: (context, box, _) {
-                var data = box.values.toList().cast<Notes>();
-                var filteredData = data.where((student) =>
-                    student.userName.toLowerCase().contains(searchQuery));
-                if (data.isEmpty) {
-                  return Center(
-                    child: Text('No Data'),
-                  );
-                } else if (filteredData.isEmpty) {
-                  return Center(
-                    child: Text('No matching results found'),
-                  );
-                } else {
-                  return isGridView
+              ),
+              Expanded(
+                child: Obx(() {
+                  var filteredData = controller.filteredData;
+                  if (filteredData.isEmpty) {
+                    return Center(
+                      child: Text('No Data'),
+                    );
+                  }
+                  return controller.isGridView.value
                       ? GridView.builder(
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
@@ -106,20 +89,20 @@ class _ListView_ScreenState extends State<ListView_Screen> {
                           ),
                           itemCount: filteredData.length,
                           itemBuilder: (context, index) {
-                            return buildGridItem(filteredData.elementAt(index));
+                            return buildGridItem(filteredData[index]);
                           },
                         )
                       : ListView.builder(
                           itemCount: filteredData.length,
                           itemBuilder: (context, index) {
-                            return buildListItem(filteredData.elementAt(index));
+                            return buildListItem(filteredData[index]);
                           },
                         );
-                }
-              },
-            ),
-          ),
-        ],
+                }),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -127,12 +110,7 @@ class _ListView_ScreenState extends State<ListView_Screen> {
   Widget buildListItem(Notes student) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (ctx) => ProfielDetail_Screen(student: student),
-          ),
-        );
+        Get.to(() => ProfileDetail_Screen(student: student));
       },
       child: Card(
         elevation: 10,
@@ -145,7 +123,7 @@ class _ListView_ScreenState extends State<ListView_Screen> {
           trailing: PopupMenuButton(
             onSelected: (value) {
               if (value == 'edit') {
-                service.editDialog(context, student);
+                service.editDialog(Get.context!, student);
               } else if (value == 'delete') {
                 service.deleteNotes(student);
               }
@@ -171,30 +149,36 @@ class _ListView_ScreenState extends State<ListView_Screen> {
   Widget buildGridItem(Notes student) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (ctx) => ProfielDetail_Screen(student: student),
-          ),
-        );
+        Get.to(() => ProfileDetail_Screen(student: student));
       },
       child: Padding(
         padding: const EdgeInsets.all(6.0),
         child: Card(
           elevation: 0,
-          child: Container(
-            decoration: BoxDecoration(
-                border: Border.all(width: 3),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+                border: Border.all(width: 2),
                 borderRadius: BorderRadius.circular(20),
                 image: DecorationImage(
-                    image: FileImage(
-                      File(student.image),
-                    ),
-                    fit: BoxFit.cover)),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
+                  image: FileImage(
+                    File(student.image),
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
               child: Text(
                 student.userName,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.white,

@@ -1,10 +1,15 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:studentlist_state/model/modal.dart';
 import 'package:studentlist_state/screens/edit_screen.dart';
+import 'package:studentlist_state/services/notifier_getx.dart';
 
 class Service {
   void deleteNotes(Notes notes) async {
     await notes.delete();
+    Get.find<ListViewController>().refresh();
   }
 
   Future<void> editDialog(BuildContext context, Notes notes) async {
@@ -19,11 +24,6 @@ class Service {
     userContactController.text = notes.userContact;
     userAgeController.text = notes.userAge;
     userRollNumberController.text = notes.userRollNumber;
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (ctx) => Edit_Screen(
-                  notes: notes,
-                )));
+    Get.to(() => Edit_Screen(notes: notes));
   }
 }

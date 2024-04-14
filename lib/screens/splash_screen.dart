@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:studentlist_state/screens/listview.dart';
 
-class Spalash_Screen extends StatefulWidget {
-  const Spalash_Screen({super.key});
-
+class SpalashScreen extends StatefulWidget {
   @override
-  State<Spalash_Screen> createState() => _Spalash_ScreenState();
+  State<SpalashScreen> createState() => _SpalashScreenState();
 }
 
-class _Spalash_ScreenState extends State<Spalash_Screen> {
-  @override
-  void initState() {
-    goToNextScreen(context);
-    super.initState();
-  }
-
+class _SpalashScreenState extends State<SpalashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,12 +18,14 @@ class _Spalash_ScreenState extends State<Spalash_Screen> {
     );
   }
 
-  Future<void> goToNextScreen(context) async {
-    await Future.delayed(
-      Duration(seconds: 2),
-    );
+  @override
+  void initState() {
+    super.initState();
+    goToNextScreen();
+  }
 
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (ctx) => ListView_Screen()));
+  void goToNextScreen() async {
+    await Future.delayed(Duration(seconds: 2));
+    Get.off(() => ListViewScreen());
   }
 }

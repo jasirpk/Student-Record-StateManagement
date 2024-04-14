@@ -1,9 +1,13 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:studentlist_state/model/box.dart';
 import 'package:studentlist_state/model/modal.dart';
+import 'package:studentlist_state/services/notifier_getx.dart';
 import 'package:studentlist_state/widgets/button.dart';
 import 'package:studentlist_state/widgets/user_age.dart';
 import 'package:studentlist_state/widgets/user_contact.dart';
@@ -182,7 +186,9 @@ class _Add_Deatails_ScreenState extends State<Add_Deatails_Screen> {
         userAgecontroller.clear();
         userRollNumbercontroller.clear();
 
-        Navigator.pop(context);
+        Get.back();
+
+        Get.find<ListViewController>().refresh();
       }
     }
   }
