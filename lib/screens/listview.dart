@@ -9,6 +9,7 @@ import 'package:studentlist_state/services/services.dart';
 
 class ListViewScreen extends StatelessWidget {
   final Service service = Get.find();
+
   final ListViewController controller = Get.put(ListViewController());
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class ListViewScreen extends StatelessWidget {
         ),
       ),
       body: GetBuilder<ListViewController>(
-        init: controller, // Initialize the controller here
+        init: controller,
         builder: (controller) {
           return Column(
             children: [
@@ -55,12 +56,12 @@ class ListViewScreen extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'LIST VIEW IN ${controller.isGridView.value ? 'GRID' : 'LIST'}...',
+                      'LIST VIEW ...',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -116,7 +117,9 @@ class ListViewScreen extends StatelessWidget {
   Widget buildListItem(Notes student) {
     return GestureDetector(
       onTap: () {
-        Get.to(() => ProfileDetail_Screen(student: student));
+        Get.to(() => ProfileDetail_Screen(
+              student: student,
+            ));
       },
       child: Card(
         elevation: 10,
@@ -155,7 +158,9 @@ class ListViewScreen extends StatelessWidget {
   Widget buildGridItem(Notes student) {
     return GestureDetector(
       onTap: () {
-        Get.to(() => ProfileDetail_Screen(student: student));
+        Get.to(() => ProfileDetail_Screen(
+              student: student,
+            ));
       },
       child: Padding(
         padding: const EdgeInsets.all(6.0),
